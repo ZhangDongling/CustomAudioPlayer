@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
     SharedPreferences.Editor editor;
     SharedPreferences prefs;
     int position=0;
-    int clickTimes=0;
+    boolean bClicked=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,26 +70,23 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
     }
 
     private boolean isDoubleClick(){
-        //检测是否是双击
-        if(clickTimes>=1){
-            return true;
-        }
-        else{
-            new Thread(new Runnable(){
-
+        //检测之前是否单击过
+       if(!bClicked){
+            new Thread(){
                 @Override
-                public void run() {
-                    clickTimes++;
+                public void run(){
+                    bClicked=true;
                     try {
                         Thread.sleep(170);//170ms后即将记录的单击次数清零
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    clickTimes=0;
+                    bClicked=false;
                 }
-            }).start();
-            return false;
+            }.start();
+           return false;
         }
+        return true;
     }
 
     @Override
